@@ -1,6 +1,7 @@
 package br.com.senior.apihotel.model;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,52 +11,26 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Checkin {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private OffsetDateTime entrada;
-	
-	@ManyToOne
+	private Long id;
+	private OffsetDateTime dataEntrada;
+	private OffsetDateTime dataSaida;
+	private Boolean adicionalVeiculo;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "hospede_id")
 	private Hospede hospede;
 
-	public Checkin() {
-	}
-
-	public Checkin(OffsetDateTime entrada, Hospede hospede) {
-		this.entrada = entrada;
-		this.hospede = hospede;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public OffsetDateTime getEntrada() {
-		return entrada;
-	}
-
-	public void setEntrada(OffsetDateTime entrada) {
-		this.entrada = entrada;
-	}
-
-	public Hospede getHospede() {
-		return hospede;
-	}
-
-	public void setHospede(Hospede hospede) {
-		this.hospede = hospede;
-	}
 
 }

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import br.com.senior.apihotel.model.Checkin;
 
 @Repository
-public interface CheckinRepository extends JpaRepository<Checkin, Integer>{
+public interface CheckinRepository extends JpaRepository<Checkin, Long>{
 
 }

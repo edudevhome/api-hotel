@@ -1,5 +1,6 @@
 package br.com.senior.apihotel.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,51 +11,30 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-public class Hospede {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Hospede implements Serializable {
+
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
 	private String nome;
+	private String documento;
+	private String telefone;
 
 	@OneToMany(mappedBy = "hospede")
 	private List<Checkin> checkins = new ArrayList<>();
-
-	public Hospede() {
-	}
-
-	public Hospede(String nome, List<Checkin> checkins) {
-		this.nome = nome;
-		this.checkins = checkins;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public List<Checkin> getCheckins() {
-		return checkins;
-	}
-
-	public void setCheckins(List<Checkin> checkins) {
-		this.checkins = checkins;
-	}
 
 }
