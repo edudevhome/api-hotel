@@ -1,7 +1,6 @@
 package br.com.senior.apihotel.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -25,7 +24,6 @@ import br.com.senior.apihotel.service.HospedeService;
 
 @RestController
 @RequestMapping("/api/hospedes")
-@Transactional
 public class HospedeController {
 
 	@Autowired
@@ -42,8 +40,8 @@ public class HospedeController {
 	}
 
 	@GetMapping
-	public List<Hospede> listarHospedes() {
-		return hospedeRepository.findAll();
+	public ResponseEntity<List<Hospede>> listarHospedes() {
+		return ResponseEntity.status(HttpStatus.OK).body(hospedeService.findAll());
 	}
 
 	@GetMapping("/{idHospede}")

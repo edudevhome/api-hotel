@@ -1,5 +1,7 @@
 package br.com.senior.apihotel.service;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +39,10 @@ public class HospedeService {
 		
 		return hospedeRepository.findById(hospedeId)
 				.orElseThrow(() -> new NegocioException("Hospede não encontrado!"));
+	}
+	
+	public List<Hospede> findAll(){
+		
+		return hospedeRepository.findAll();
 	}
 }
