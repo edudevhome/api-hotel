@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,15 +48,15 @@ public class CheckinController {
 			throws Exception {
 
 		Optional<Hospede> hospede = hospedeRepository.findById(checkin.getHospede().getId());
-		if (!hospede.isPresent())
+		
+		if (!hospede.isPresent()) {
 			throw new Exception();
-
+		}
 		checkin.setHospede(hospede.orElse(null));
 		checkinRepository.save(checkin);
 		URI uri = uriBuilder.path("/api/checkins/{id}").buildAndExpand(checkin.getId()).toUri();
 
 		return ResponseEntity.created(uri).body(new CheckinDto(checkin));
-		// return checkinService.salvar(checkin);
 
 	}
 
@@ -95,6 +96,7 @@ public class CheckinController {
 	}
 
 	@PutMapping("/{idCheckin}")
+	@Transactional
 	public ResponseEntity<CheckinDto> atualizar(@PathVariable Long idCheckin, @RequestBody @Valid CheckinForm form) {
 		Optional<Checkin> optional = checkinRepository.findById(idCheckin);
 		if (optional.isPresent()) {
@@ -108,6 +110,7 @@ public class CheckinController {
 	}
 
 	@DeleteMapping("/{idCheckin}")
+	@Transactional
 	public ResponseEntity<?> remover(@PathVariable Long idCheckin) {
 
 		Optional<Checkin> optional = checkinRepository.findById(idCheckin);

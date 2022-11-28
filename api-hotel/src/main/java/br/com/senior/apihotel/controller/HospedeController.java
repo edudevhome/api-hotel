@@ -40,7 +40,6 @@ public class HospedeController {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public Hospede criar(@Valid @RequestBody Hospede hospede) {
 
-		// return hospedeRepository.save(hospede);
 		return hospedeService.salvar(hospede);
 	}
 
@@ -85,6 +84,7 @@ public class HospedeController {
 	}
 
 	@DeleteMapping("/{hospedeId}")
+	@Transactional
 	public ResponseEntity<Void> remover(@PathVariable Long hospedeId) {
 		if (!hospedeRepository.existsById(hospedeId)) {
 			return ResponseEntity.notFound().build();
