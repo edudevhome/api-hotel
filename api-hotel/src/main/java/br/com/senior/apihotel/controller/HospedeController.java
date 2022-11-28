@@ -1,10 +1,12 @@
 package br.com.senior.apihotel.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.senior.apihotel.controller.form.AtualizacaoHospedeForm;
+import br.com.senior.apihotel.dto.HospedeDto;
 import br.com.senior.apihotel.model.Hospede;
 import br.com.senior.apihotel.repository.HospedeRepository;
 import br.com.senior.apihotel.service.HospedeService;
@@ -34,43 +38,49 @@ public class HospedeController {
 
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public Hospede criar(@RequestBody Hospede hospede) {
+	public Hospede criar(@Valid @RequestBody Hospede hospede) {
 
-		return hospedeRepository.save(hospede);
+		// return hospedeRepository.save(hospede);
+		return hospedeService.salvar(hospede);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Hospede>> listarHospedes() {
-		return ResponseEntity.status(HttpStatus.OK).body(hospedeService.findAll());
+	public List<HospedeDto> listarHospedes() {
+
+		List<Hospede> hospedes = hospedeRepository.findAll();
+		return HospedeDto.converter(hospedes);
+
 	}
 
 	@GetMapping("/{idHospede}")
-	public Hospede findById(@PathVariable Long idHospede) {
+	public ResponseEntity<HospedeDto> buscarHospede(@PathVariable Long idHospede) {
 
-		
-		
-		//Hospede hospede = hospedeRepository.findById(idHospede).get();
-		
-		return hospedeService.buscar(idHospede);
-		
-		 
+		Optional<Hospede> optional = hospedeRepository.findById(idHospede);
+		if (optional.isPresent()) {
+
+			Hospede hospede = hospedeRepository.findById(idHospede).get();
+			ModelMapper modelMapper = new ModelMapper();
+			HospedeDto dto = modelMapper.map(hospede, HospedeDto.class);
+
+			return ResponseEntity.ok().body(dto);
+		}
+
+		return ResponseEntity.notFound().build();
 	}
-	
-	
-	
 
 	@PutMapping("/{hospedeId}")
-	public ResponseEntity<Hospede> atualizar(@Valid @PathVariable Long hospedeId, @RequestBody Hospede hospede) {
+	@Transactional // Dispara o commit no db
+	public ResponseEntity<HospedeDto> atualizar(@PathVariable Long hospedeId,
+			@Valid @RequestBody AtualizacaoHospedeForm form) {
 
-		if (!hospedeRepository.existsById(hospedeId)) {
+		Optional<Hospede> optional = hospedeRepository.findById(hospedeId);
+		if (optional.isPresent()) {
+			Hospede hospede = form.atualizar(hospedeId, hospedeRepository);
 
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.ok(new HospedeDto(hospede));
 		}
-		hospede.setId(hospedeId);
-		// cliente = clienteRepository.save(cliente);
-		hospedeService.salvar(hospede);
 
-		return ResponseEntity.ok(hospede);
+		return ResponseEntity.notFound().build();
 
 	}
 
@@ -79,7 +89,6 @@ public class HospedeController {
 		if (!hospedeRepository.existsById(hospedeId)) {
 			return ResponseEntity.notFound().build();
 		}
-		// clienteRepository.deleteById(clienteId);
 		hospedeService.excluir(hospedeId);
 		return ResponseEntity.noContent().build();
 	}

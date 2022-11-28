@@ -12,4 +12,6 @@ public interface CheckinRepository extends JpaRepository<Checkin, Long>{
 
 	// Hospede é a entidade do relacionamento e Nome é o atributo.
 	List<Checkin> findByHospedeNome(String nomeHospede);
+	List<Checkin> findByHospedeDocumento(String documentoHospede);
+	List<Checkin> findByHospedeTelefone(String telefoneHospede);
 }

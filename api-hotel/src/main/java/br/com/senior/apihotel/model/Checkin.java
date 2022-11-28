@@ -3,6 +3,7 @@ package br.com.senior.apihotel.model;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -10,7 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.validation.constraints.NotEmpty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,20 +31,29 @@ public class Checkin implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private OffsetDateTime dataEntrada = OffsetDateTime.now();
-	private OffsetDateTime dataSaida;
-	private Boolean adicionalVeiculo;
 	
-	@Transient
-	private Long idHospede;
+	
+	private OffsetDateTime dataSaida;
+	
+	@NotEmpty
+	@Column(nullable = false)
+	private Boolean adicionalVeiculo;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "hospede_id")
 	private Hospede hospede;
 
-	public Checkin(OffsetDateTime dataSaida, Boolean adicionalVeiculo, Long idHospede) {
+	public Checkin(OffsetDateTime dataSaida, Boolean adicionalVeiculo, Hospede hospede) {
 		this.dataSaida = dataSaida;
 		this.adicionalVeiculo = adicionalVeiculo;
-		this.idHospede = idHospede;
+		this.hospede = hospede;
+	}
+	
+	public Checkin(Long id, OffsetDateTime dataSaida, Boolean adicionalVeiculo, Hospede hospede) {
+		this.id = id;
+		this.dataSaida = dataSaida;
+		this.adicionalVeiculo = adicionalVeiculo;
+		this.hospede = hospede;
 	}
 	
 	

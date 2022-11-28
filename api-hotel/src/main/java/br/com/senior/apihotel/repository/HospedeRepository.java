@@ -11,4 +11,6 @@ import br.com.senior.apihotel.model.Hospede;
 public interface HospedeRepository extends JpaRepository<Hospede, Long>{
 
 	List<Hospede> findByDocumento(String documento);
+
+	Hospede findByNome(String nomeHospede);
 }

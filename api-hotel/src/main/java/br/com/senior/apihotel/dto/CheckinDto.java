@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.senior.apihotel.model.Checkin;
-import br.com.senior.apihotel.model.Hospede;
 import lombok.Data;
 
 @Data
-public class CheckinDto {
+public class CheckinDto { // DTO's são dados que saem da api e retornam para o cliente. FORM's são dados
+							// enviados do cliente para a api.
 
 	private Long id;
 	private OffsetDateTime dataEntrada;
@@ -18,7 +18,7 @@ public class CheckinDto {
 	private String nomeHospede;
 	private String documentoHospede;
 	private String telefoneHospede;
-	
+
 	public CheckinDto(Checkin checkin) {
 		this.id = checkin.getId();
 		this.dataEntrada = checkin.getDataEntrada();
@@ -28,8 +28,9 @@ public class CheckinDto {
 		this.documentoHospede = checkin.getHospede().getDocumento();
 		this.telefoneHospede = checkin.getHospede().getTelefone();
 	}
-	
+
 	public static List<CheckinDto> converter(List<Checkin> checkins) {
-		return checkins.stream().map(CheckinDto ::new).collect(Collectors.toList());
+		return checkins.stream().map(CheckinDto::new).collect(Collectors.toList());
 	}
+
 }
